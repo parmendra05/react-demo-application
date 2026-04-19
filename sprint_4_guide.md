@@ -60,10 +60,10 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, sans-s
 
 /* Filter bar */
 .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px; }
-.search-input { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: .95rem; background: var(--surface); }
+.search-input { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: .95rem; background: var(--surface); color: var(--text); }
 .search-input:focus { outline: 2px solid var(--accent); }
 .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-.filter-tab { padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); cursor: pointer; font-size: .875rem; }
+.filter-tab { padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text); cursor: pointer; font-size: .875rem; }
 .filter-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* Cards grid */
