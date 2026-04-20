@@ -6,86 +6,84 @@ import ProjectModal from "./components/ProjectModal";
 import "./App.css";
 
 export default function App() {
-  // All projects loaded from the mock API
+  // State: list of all projects (starts empty)
   const [projects, setProjects] = useState([]);
-
-  // Projects currently visible after filtering/searching
-  const [filtered, setFiltered] = useState([]);
-
-  // Show spinner while data is loading
+  // State: true while data is loading
   const [loading, setLoading] = useState(true);
-
-  // The project the user clicked on (null = modal is closed)
+  // State: current text in the search box
+  const [search, setSearch] = useState("");
+  // State: which filter tab is active
+  const [filter, setFilter] = useState("All");
+  // State: which project card was clicked (null = modal closed)
   const [selected, setSelected] = useState(null);
 
-  // Fetch projects once when the page first loads
+  // Fetch projects once when the page loads
   useEffect(() => {
     fetchProjects().then((data) => {
       setProjects(data);
-      setFiltered(data); // show all projects by default
       setLoading(false);
     });
   }, []);
 
+  // Filter the projects list based on search text and active filter tab
+  const filtered = projects.filter((p) => {
+    const matchesFilter = filter === "All" || p.status === filter;
+    const matchesSearch =
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.manager.toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   return (
     <div className="dashboard">
 
-      {/* Page header */}
       <header className="dash-header">
-        <h1 className="dash-title">Project Dashboard</h1>
-        <p className="dash-sub">Track and manage all internal projects</p>
+        <h1>Project Dashboard</h1>
+        <p>Track and manage all internal projects</p>
       </header>
 
-      {/* Summary stats */}
+      {/* Stats row — counts projects by status */}
       <div className="stats-row">
         <div className="stat-card">
           <span className="stat-num">{projects.length}</span>
-          <span className="stat-label">Total Projects</span>
+          <span className="stat-label">Total</span>
         </div>
-        <div className="stat-card progress-stat">
-          <span className="stat-num">
-            {projects.filter((p) => p.status === "In Progress").length}
-          </span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "In Progress").length}</span>
           <span className="stat-label">In Progress</span>
         </div>
-        <div className="stat-card completed-stat">
-          <span className="stat-num">
-            {projects.filter((p) => p.status === "Completed").length}
-          </span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "Completed").length}</span>
           <span className="stat-label">Completed</span>
         </div>
-        <div className="stat-card hold-stat">
-          <span className="stat-num">
-            {projects.filter((p) => p.status === "On Hold").length}
-          </span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "On Hold").length}</span>
           <span className="stat-label">On Hold</span>
         </div>
       </div>
 
-      {/* Search + filter tabs — FilterBar handles its own logic */}
-      <FilterBar projects={projects} onFilterChange={setFiltered} />
+      {/* Search box and filter tabs */}
+      <FilterBar
+        search={search}
+        onSearch={setSearch}
+        filter={filter}
+        onFilter={setFilter}
+      />
 
-      {/* Main content area */}
+      {/* Show loading text, empty message, or the cards grid */}
       {loading ? (
-        <div className="loading">
-          <div className="spinner" />
-          <p>Loading projects…</p>
-        </div>
+        <p className="loading">Loading projects…</p>
       ) : filtered.length === 0 ? (
-        <div className="empty">No projects match your search.</div>
+        <p className="empty">No projects match your search.</p>
       ) : (
         <div className="cards-grid">
-          {filtered.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onClick={setSelected}
-            />
+          {filtered.map((p) => (
+            <ProjectCard key={p.id} project={p} onClick={setSelected} />
           ))}
         </div>
       )}
 
-      {/* Detail modal — only visible when a project is selected */}
+      {/* Modal — only visible when a card is clicked */}
       <ProjectModal project={selected} onClose={() => setSelected(null)} />
 
     </div>

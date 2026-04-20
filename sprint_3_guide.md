@@ -2,7 +2,7 @@
 
 **Assignee:** Team Member 3  
 **Depends on:** Sprint 1 & Sprint 2 complete  
-**Goal:** Build the modal component and wire everything together in App.jsx.
+**Goal:** Build the modal popup and wire all components together in App.jsx.
 
 ---
 
@@ -10,70 +10,46 @@
 
 ### 1. Create `src/components/ProjectModal.jsx`
 
-```jsx
-const TASK_CLASS = {
-  Done: "task-done",
-  "In Progress": "task-progress",
-  Pending: "task-pending",
-};
+This component shows a popup with full project details when a card is clicked.
 
+```jsx
 export default function ProjectModal({ project, onClose }) {
+  // If no project is selected, render nothing
   if (!project) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
+
         <button className="modal-close" onClick={onClose}>✕</button>
-        <div className="modal-header">
-          <h2>{project.name}</h2>
-          <span className={`badge badge-lg ${
-            project.status === "Completed" ? "badge-completed" :
-            project.status === "On Hold" ? "badge-hold" : "badge-progress"
-          }`}>
-            {project.status}
-          </span>
-        </div>
+
+        <h2>{project.name}</h2>
+        <span className={"badge badge-" + project.status.toLowerCase().replace(" ", "-")}>
+          {project.status}
+        </span>
+
         <p className="modal-desc">{project.description}</p>
-        <div className="modal-meta">
-          <div><span className="meta-label">Manager</span><span>{project.manager}</span></div>
-          <div>
-            <span className="meta-label">Deadline</span>
-            <span>{new Date(project.deadline).toLocaleDateString("en-US", {
-              year: "numeric", month: "long", day: "numeric"
-            })}</span>
-          </div>
-          <div><span className="meta-label">Progress</span><span>{project.progress}%</span></div>
-        </div>
-        <div className="modal-progress">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${project.progress}%` }} />
-          </div>
-        </div>
-        <h4 className="tasks-heading">Tasks ({project.tasks.length})</h4>
-        <ul className="task-list">
-          {project.tasks.map((task) => (
-            <li key={task.id} className="task-item">
-              <span className={`task-dot ${TASK_CLASS[task.status]}`} />
-              <span className="task-title">{task.title}</span>
-              <span className={`task-badge ${TASK_CLASS[task.status]}`}>{task.status}</span>
-            </li>
-          ))}
-        </ul>
+
+        <p><strong>Manager:</strong> {project.manager}</p>
+        <p><strong>Deadline:</strong> {project.deadline}</p>
+
       </div>
     </div>
   );
 }
 ```
 
-**Key concepts:**
-- `if (!project) return null` — standard React pattern: render nothing when modal is closed
-- Click-outside-to-close: overlay has `onClick={onClose}`, inner modal has `e.stopPropagation()` to prevent the click bubbling up to the overlay
-- `toLocaleDateString("en-US", {...})` formats `"2026-06-15"` → `"June 15, 2026"`
-- `project.tasks.length` — dynamically shows task count in the heading
+**What each part does:**
+- `if (!project) return null` — when nothing is selected, the modal is invisible. This is the standard React way to show/hide things
+- `onClick={onClose}` on the overlay — clicking the dark background closes the modal
+- `e.stopPropagation()` on the inner modal — stops the click from reaching the overlay, so clicking inside the modal does NOT close it
+- The badge class is built the same way as in ProjectCard: `"badge badge-" + status`
 
 ---
 
 ### 2. Replace `src/App.jsx`
+
+App.jsx is the main component. It holds all the state and connects every other component.
 
 ```jsx
 import { useState, useEffect } from "react";
@@ -84,12 +60,18 @@ import ProjectModal from "./components/ProjectModal";
 import "./App.css";
 
 export default function App() {
+  // State: list of all projects (starts empty)
   const [projects, setProjects] = useState([]);
+  // State: true while data is loading
   const [loading, setLoading] = useState(true);
+  // State: current text in the search box
   const [search, setSearch] = useState("");
+  // State: which filter tab is active
   const [filter, setFilter] = useState("All");
+  // State: which project card was clicked (null = modal closed)
   const [selected, setSelected] = useState(null);
 
+  // Fetch projects once when the page loads
   useEffect(() => {
     fetchProjects().then((data) => {
       setProjects(data);
@@ -97,50 +79,44 @@ export default function App() {
     });
   }, []);
 
+  // Filter the projects list based on search text and active filter tab
   const filtered = projects.filter((p) => {
     const matchesFilter = filter === "All" || p.status === filter;
-    const q = search.toLowerCase();
     const matchesSearch =
-      p.name.toLowerCase().includes(q) ||
-      p.manager.toLowerCase().includes(q);
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.manager.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
-  const counts = {
-    total: projects.length,
-    inProgress: projects.filter((p) => p.status === "In Progress").length,
-    completed: projects.filter((p) => p.status === "Completed").length,
-    onHold: projects.filter((p) => p.status === "On Hold").length,
-  };
-
   return (
     <div className="dashboard">
+
       <header className="dash-header">
-        <div>
-          <h1 className="dash-title">Project Dashboard</h1>
-          <p className="dash-sub">Track and manage all internal projects</p>
-        </div>
+        <h1>Project Dashboard</h1>
+        <p>Track and manage all internal projects</p>
       </header>
 
+      {/* Stats row — counts projects by status */}
       <div className="stats-row">
         <div className="stat-card">
-          <span className="stat-num">{counts.total}</span>
-          <span className="stat-label">Total Projects</span>
+          <span className="stat-num">{projects.length}</span>
+          <span className="stat-label">Total</span>
         </div>
-        <div className="stat-card progress-stat">
-          <span className="stat-num">{counts.inProgress}</span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "In Progress").length}</span>
           <span className="stat-label">In Progress</span>
         </div>
-        <div className="stat-card completed-stat">
-          <span className="stat-num">{counts.completed}</span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "Completed").length}</span>
           <span className="stat-label">Completed</span>
         </div>
-        <div className="stat-card hold-stat">
-          <span className="stat-num">{counts.onHold}</span>
+        <div className="stat-card">
+          <span className="stat-num">{projects.filter(p => p.status === "On Hold").length}</span>
           <span className="stat-label">On Hold</span>
         </div>
       </div>
 
+      {/* Search box and filter tabs */}
       <FilterBar
         search={search}
         onSearch={setSearch}
@@ -148,13 +124,11 @@ export default function App() {
         onFilter={setFilter}
       />
 
+      {/* Show spinner while loading, empty message if no results, otherwise show cards */}
       {loading ? (
-        <div className="loading">
-          <div className="spinner" />
-          <p>Loading projects…</p>
-        </div>
+        <p className="loading">Loading projects…</p>
       ) : filtered.length === 0 ? (
-        <div className="empty">No projects match your search.</div>
+        <p className="empty">No projects match your search.</p>
       ) : (
         <div className="cards-grid">
           {filtered.map((p) => (
@@ -163,33 +137,37 @@ export default function App() {
         </div>
       )}
 
+      {/* Modal — only visible when a card is clicked */}
       <ProjectModal project={selected} onClose={() => setSelected(null)} />
+
     </div>
   );
 }
 ```
 
-**State reference:**
+**State explained simply:**
 
-| State | Initial Value | Purpose |
-|-------|--------------|---------|
-| `projects` | `[]` | All projects from mock API |
-| `loading` | `true` | Shows spinner while fetching |
-| `search` | `""` | Current search input value |
-| `filter` | `"All"` | Active status tab |
-| `selected` | `null` | Project shown in modal (`null` = closed) |
+| State | Starts as | What it stores |
+|-------|-----------|----------------|
+| `projects` | `[]` | All 4 projects from the mock API |
+| `loading` | `true` | Becomes `false` once data arrives |
+| `search` | `""` | Whatever the user types in the search box |
+| `filter` | `"All"` | Which filter button is active |
+| `selected` | `null` | The project to show in the modal (`null` = closed) |
 
-**Key concepts:**
-- `useEffect` with `[]` — runs once on mount to fetch data
-- Filtering runs on every render automatically — no button press needed
-- `setSearch` and `setFilter` are passed directly as `onSearch`/`onFilter` props — this is called **lifting state up**
-- Three-way conditional render: loading → empty → grid
+**How data flows:**
+- App.jsx fetches data → stores in `projects`
+- App.jsx passes `search` and `filter` down to FilterBar as props
+- FilterBar calls `onSearch` / `onFilter` when user types or clicks → updates state in App.jsx
+- Updated state causes App.jsx to re-render → `filtered` list recalculates automatically
+- Clicking a card calls `setSelected(project)` → modal opens with that project's data
 
 ---
 
 ## Definition of Done
 - [ ] `src/components/ProjectModal.jsx` created
-- [ ] `src/App.jsx` replaced with full dashboard logic
-- [ ] Clicking a card opens the modal; clicking overlay or ✕ closes it
-- [ ] Search and filter tabs update the card grid correctly
+- [ ] `src/App.jsx` replaced with the code above
+- [ ] Clicking a card opens the modal
+- [ ] Clicking the dark overlay or ✕ closes the modal
+- [ ] Search and filter tabs work correctly
 - [ ] Hand off: notify Sprint 4 assignee that logic is complete
