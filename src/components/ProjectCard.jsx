@@ -13,7 +13,7 @@ export default function ProjectCard({ project, onClick }) {
       {/* Project info */}
       <h3 className="card-title">{project.name}</h3>
       <p className="card-manager">👤 {project.manager}</p>
-      <p className="card-desc">{project.description}</p>
+      <p className="card-desc">  {project.description}</p>
 
     </div>
   );
