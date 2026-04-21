@@ -123,6 +123,95 @@ src/
 
 ---
 
+## 🧩 Component Deep Dive
+
+### 📌 FilterBar.jsx — Search + Filter Tabs
+
+**What it does:** Renders the search input and the 4 status filter tab buttons.
+
+**Props it receives from App.jsx:**
+
+| Prop | Type | Purpose |
+|------|------|---------|
+| `search` | string | Current text typed in the search box |
+| `onSearch` | function | Updates search state in App on every keystroke |
+| `filter` | string | Currently active tab (e.g. "All", "Completed") |
+| `onFilter` | function | Updates filter state in App when a tab is clicked |
+
+**Key points to mention:**
+- The `STATUSES` array `["All", "In Progress", "Completed", "On Hold"]` is defined **outside** the component so it's never recreated on re-renders
+- The search input is a **controlled input** — React fully controls its value via `value={search}`
+- The active tab gets a purple highlight using dynamic CSS: `filter === s ? "filter-tab active" : "filter-tab"`
+
+> "FilterBar is a pure UI component — it holds no state of its own. It just receives values and fires callbacks up to App."
+
+---
+
+### 📌 ProjectCard.jsx — Individual Project Card
+
+**What it does:** Renders one project as a clickable card showing status, deadline, manager, and description.
+
+**Props it receives from App.jsx:**
+
+| Prop | Type | Purpose |
+|------|------|---------|
+| `project` | object | Full project data (name, status, manager, deadline, description) |
+| `onClick` | function | Called with the project object when card is clicked — opens modal |
+
+**Key points to mention:**
+- The **entire card div** is clickable — `onClick={() => onClick(project)}` passes the full project up to App
+- Status badge CSS class is built dynamically:
+  - `"In Progress"` → `badge-in-progress` → blue
+  - `"Completed"` → `badge-completed` → green
+  - `"On Hold"` → `badge-on-hold` → yellow
+- `.replace(" ", "-")` converts the space in status text to a hyphen to match CSS class names
+- Hover effect (subtle shadow) is handled purely in CSS — no JS needed
+
+> "Each ProjectCard is completely reusable — give it any project object and it renders correctly. That's the power of component-based design."
+
+---
+
+### 📌 ProjectModal.jsx — Project Detail Popup
+
+**What it does:** Shows full project details in a modal overlay when a card is clicked.
+
+**Props it receives from App.jsx:**
+
+| Prop | Type | Purpose |
+|------|------|---------|
+| `project` | object or null | Selected project data. `null` means modal is hidden |
+| `onClose` | function | Resets `selected` to `null` in App — closes the modal |
+
+**Key points to mention:**
+- `if (!project) return null` — **early return pattern**: when no project is selected, nothing is rendered at all
+- Two layered click handlers for smart close behavior:
+  - Clicking the **dark overlay** (outside) → calls `onClose` → modal closes
+  - Clicking **inside** the white modal box → `e.stopPropagation()` blocks the click from reaching the overlay → modal stays open
+- Without `stopPropagation`, any click inside the modal would bubble up and accidentally close it
+
+> "The modal open/close logic is entirely controlled by one state variable — `selected` in App.jsx. Null means closed, a project object means open. Simple and clean."
+
+---
+
+### 🔄 How All 3 Components Work Together
+
+```
+App.jsx  (owns all state)
+   │
+   ├──▶ FilterBar    receives: search, onSearch, filter, onFilter
+   │                 fires:    onSearch() and onFilter() back to App
+   │
+   ├──▶ ProjectCard  receives: project object, onClick
+   │                 fires:    onClick(project) → sets selected in App
+   │
+   └──▶ ProjectModal receives: selected project (or null), onClose
+                     fires:    onClose() → resets selected to null
+```
+
+> "Data flows **down** as props, events flow **up** via callbacks. This is React's core pattern — lifting state up — and it keeps the app predictable and easy to debug."
+
+---
+
 ## 🔑 Key React Concepts Used
 
 | Concept | Where used |
