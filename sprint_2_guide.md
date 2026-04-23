@@ -1,89 +1,119 @@
-# Sprint 2 — FilterBar & ProjectCard Components
+# Sprint 2 — Mock Data & Fake API
 
-**Assignee:** Team Member 2  
-**Depends on:** Sprint 1 complete  
-**Goal:** Build two simple presentational components — FilterBar and ProjectCard.
+**Goal:** Create the data layer that the whole app will use.
 
 ---
 
-## Tasks
-
-### 1. Create `src/components/FilterBar.jsx`
-
-This component shows a search box and four filter buttons.
-
-```jsx
-const STATUSES = ["All", "In Progress", "Completed", "On Hold"];
-
-export default function FilterBar({ search, onSearch, filter, onFilter }) {
-  return (
-    <div className="filter-bar">
-      <input
-        className="search-input"
-        type="text"
-        placeholder="Search projects or managers…"
-        value={search}
-        onChange={(e) => onSearch(e.target.value)}
-      />
-      <div className="filter-tabs">
-        {STATUSES.map((s) => (
-          <button
-            key={s}
-            className={filter === s ? "filter-tab active" : "filter-tab"}
-            onClick={() => onFilter(s)}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
-**What each part does:**
-- `STATUSES` — the list of filter button labels, defined once outside the component
-- `value={search}` + `onChange` — keeps the input in sync with React state (called a controlled input)
-- `filter === s ? "filter-tab active" : "filter-tab"` — adds the `active` class only to the currently selected button
-- This component has **no state of its own** — it just receives values and calls functions passed from the parent
+## What You Will Do
+- Create the project data as a JavaScript array
+- Create a fake API function that simulates loading data from a server
 
 ---
 
-### 2. Create `src/components/ProjectCard.jsx`
+## What is Mock Data?
 
-This component displays one project as a clickable card.
+In a real app, data comes from a server (API).
+Since we have no server yet, we create a JavaScript file that **pretends** to be an API.
+This is called **mock data**.
 
-```jsx
-export default function ProjectCard({ project, onClick }) {
-  return (
-    <div className="project-card" onClick={() => onClick(project)}>
-      <div className="card-header">
-        <span className={"badge badge-" + project.status.toLowerCase().replace(" ", "-")}>
-          {project.status}
-        </span>
-        <span className="deadline">📅 {project.deadline}</span>
-      </div>
-      <h3 className="card-title">{project.name}</h3>
-      <p className="card-manager">👤 {project.manager}</p>
-      <p className="card-desc">{project.description}</p>
-    </div>
-  );
-}
+The pattern is identical to a real API call — so when you connect a real backend later, almost nothing changes.
+
+---
+
+## Step 1 — Create `src/data/mockData.js`
+
+Create a new file at `src/data/mockData.js` and paste this code:
+
+```js
+export const mockProjects = [
+  {
+    id: 1,
+    name: "HR Platform Migration",
+    manager: "Ranjat Srivastava",
+    status: "In Progress",
+    deadline: "2026-06-15",
+    description: "Migrating the legacy HR platform to a new cloud-native architecture."
+  },
+  {
+    id: 2,
+    name: "Q2 Marketing Campaign Analytics",
+    manager: "Priya Sharma",
+    status: "Completed",
+    deadline: "2026-04-30",
+    description: "Analyze the performance of all digital marketing campaigns from the second quarter."
+  },
+  {
+    id: 3,
+    name: "Customer Support AI Chatbot",
+    manager: "Sushant Mishra",
+    status: "On Hold",
+    deadline: "2026-09-01",
+    description: "Develop a new AI-powered chatbot to handle initial customer support queries."
+  },
+  {
+    id: 4,
+    name: "Internal DevOps Toolchain Upgrade",
+    manager: "Ankit Verma",
+    status: "In Progress",
+    deadline: "2026-07-20",
+    description: "Upgrade CI/CD pipelines and containerize all internal services using Docker and Kubernetes."
+  }
+];
+
+export const fetchProjects = () =>
+  new Promise((resolve) => setTimeout(() => resolve(mockProjects), 700));
 ```
 
-**What each part does:**
-- `onClick={() => onClick(project)}` — when the card is clicked, it sends the full project object up to the parent (App.jsx)
-- `"badge badge-" + project.status.toLowerCase().replace(" ", "-")` — builds the CSS class name from the status string:
-  - `"In Progress"` → `"badge badge-in-progress"`
-  - `"Completed"` → `"badge badge-completed"`
-  - `"On Hold"` → `"badge badge-on-hold"`
-- `project.deadline` — displays the deadline date string directly from the data
-- The card itself holds **no state** — it only displays what it receives via `project` prop
+---
+
+## Understanding the Code
+
+**The data array:**
+```js
+export const mockProjects = [ ... ];
+```
+- `export` — makes it available to import in other files
+- Each project is an object `{ }` with 6 fields: `id`, `name`, `manager`, `status`, `deadline`, `description`
+- `id` is a unique number — React uses this to track each item in a list
+
+**The fake API function:**
+```js
+export const fetchProjects = () =>
+  new Promise((resolve) => setTimeout(() => resolve(mockProjects), 700));
+```
+- `fetchProjects` is a function that returns a **Promise**
+- A Promise represents a value that will arrive in the future (like waiting for a server response)
+- `setTimeout(..., 700)` waits 700 milliseconds before returning the data
+- This delay lets you see the "Loading..." message — just like a real network request
+
+**How to use it in another file:**
+```js
+import { fetchProjects } from "./data/mockData";
+
+fetchProjects().then((data) => {
+  console.log(data); // prints the 4 projects after 700ms
+});
+```
+
+---
+
+## Key Concept — What is a Promise?
+
+Think of a Promise like ordering food at a restaurant:
+1. You place the order (call `fetchProjects()`)
+2. You get a ticket/promise that food is coming
+3. When food is ready, `.then()` is called with the result
+
+```js
+fetchProjects()           // 1. place the order
+  .then((data) => {       // 3. food arrived — data = the projects array
+    setProjects(data);
+  });
+```
 
 ---
 
 ## Definition of Done
-- [ ] `src/components/FilterBar.jsx` created
-- [ ] `src/components/ProjectCard.jsx` created
-- [ ] No console errors when files are saved
-- [ ] Hand off: notify Sprint 3 assignee that both components are ready
+- [ ] `src/data/mockData.js` file created
+- [ ] File exports both `mockProjects` and `fetchProjects`
+- [ ] No errors in the terminal

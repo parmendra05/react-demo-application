@@ -1,25 +1,31 @@
-# Sprint 1 — Project Setup & Mock Data
+# Sprint 1 — Project Setup & Folder Structure
 
-**Assignee:** Team Member 1  
-**Goal:** Bootstrap the Vite + React project and create the mock data layer.
+**Goal:** Install the tools, create the project, and set up the folder structure.
 
 ---
 
-## Tasks
+## What You Will Do
+- Install Node.js and npm
+- Create a new React project using Vite
+- Set up the correct folder structure for the app
 
-### 1. Environment Check
+---
 
-Run in terminal:
+## Step 1 — Check Your Tools
+
+Open a terminal and run:
 ```bash
 node -v
 npm -v
 ```
-Requires Node 18+. Download from https://nodejs.org if missing.
+
+You need **Node 18 or higher**. If not installed, download from https://nodejs.org (choose LTS version).
 
 ---
 
-### 2. Scaffold the Project
+## Step 2 — Create the Project
 
+Run these commands one by one:
 ```bash
 npm create vite@latest demo-application -- --template react
 cd demo-application
@@ -27,84 +33,61 @@ npm install
 npm run dev
 ```
 
-Verify the default Vite starter loads at `http://localhost:5173`.
+**What each command does:**
+- `npm create vite@latest` — creates a new project using Vite (a fast build tool)
+- `--template react` — sets it up as a React project
+- `npm install` — downloads all required packages
+- `npm run dev` — starts the app at `http://localhost:5173`
+
+Open `http://localhost:5173` in your browser — you should see the default Vite starter page. ✅
 
 ---
 
-### 3. Create Folder Structure
+## Step 3 — Create Folders
 
+Inside the `src/` folder, create two new folders:
 ```bash
 mkdir src/data
 mkdir src/components
 ```
 
-Final `src/` layout:
+---
+
+## Step 4 — Final Folder Structure
+
+After this sprint, your `src/` should look like this:
 ```
 src/
-├── components/     ← Sprint 2 & 3 will populate this
-├── data/
-│   └── mockData.js ← you create this now
-├── App.jsx
-├── App.css
-├── index.css
-└── main.jsx
+├── components/       ← empty for now, components go here from Sprint 2 onwards
+├── data/             ← empty for now, mock data goes here in Sprint 2
+├── App.jsx           ← already exists
+├── App.css           ← already exists
+├── index.css         ← already exists
+└── main.jsx          ← already exists, never needs to change
 ```
 
 ---
 
-### 4. Create `src/data/mockData.js`
+## Key Concept — What is React?
 
-Each project has 5 fields: `id`, `name`, `manager`, `status`, `deadline`, and `description`.
+React is a JavaScript library for building user interfaces.
+Instead of writing one big HTML file, you break the UI into small reusable pieces called **components**.
 
-```js
-export const mockProjects = [
-  {
-    id: 1,
-    name: "HR Platform Migration",
-    manager: "Ranjat Srivastava",
-    status: "In Progress",
-    deadline: "2026-06-15",
-    description: "Migrating the legacy HR platform to a new cloud-native architecture."
-  },
-  {
-    id: 2,
-    name: "Q2 Marketing Campaign Analytics",
-    manager: "Priya Sharma",
-    status: "Completed",
-    deadline: "2026-04-30",
-    description: "Analyze the performance of all digital marketing campaigns from the second quarter."
-  },
-  {
-    id: 3,
-    name: "Customer Support AI Chatbot",
-    manager: "Sushant Mishra",
-    status: "On Hold",
-    deadline: "2026-09-01",
-    description: "Develop a new AI-powered chatbot to handle initial customer support queries."
-  },
-  {
-    id: 4,
-    name: "Internal DevOps Toolchain Upgrade",
-    manager: "Ankit Verma",
-    status: "In Progress",
-    deadline: "2026-07-20",
-    description: "Upgrade CI/CD pipelines and containerize all internal services using Docker and Kubernetes."
-  }
-];
-
-export const fetchProjects = () =>
-  new Promise((resolve) => setTimeout(() => resolve(mockProjects), 700));
+```
+App (the whole page)
+ ├── Header
+ ├── StatsRow
+ ├── FilterBar
+ └── ProjectGrid
+      └── ProjectCard (one per project)
 ```
 
-**Key concepts:**
-- `export const` — makes the variable available to import in other files
-- `fetchProjects` returns a `Promise` — this is how real API calls work too
-- `setTimeout(..., 700)` — waits 700ms before returning data, so you can see the loading spinner
+Each component is just a JavaScript function that returns HTML-like code called **JSX**.
 
 ---
 
 ## Definition of Done
 - [ ] `npm run dev` starts without errors
-- [ ] `src/data/mockData.js` exists and exports `mockProjects` and `fetchProjects`
-- [ ] `src/components/` folder exists (empty is fine)
-- [ ] Hand off: share the repo/branch with Sprint 2 assignee
+- [ ] Browser shows the Vite starter page at `http://localhost:5173`
+- [ ] `src/components/` folder exists
+- [ ] `src/data/` folder exists

@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import { fetchProjects } from "./data/mockData";
 import FilterBar from "./components/FilterBar";
-import ProjectCard from "./components/ProjectCard";
+import StatsRow from "./components/StatsRow";
+import ProjectGrid from "./components/ProjectGrid";
 import ProjectModal from "./components/ProjectModal";
+import ProjectForm from "./components/ProjectForm";
 import "./App.css";
 
 export default function App() {
-  // State: list of all projects (starts empty)
   const [projects, setProjects] = useState([]);
-  // State: true while data is loading
   const [loading, setLoading] = useState(true);
-  // State: current text in the search box
   const [search, setSearch] = useState("");
-  // State: which filter tab is active
   const [filter, setFilter] = useState("All");
-  // State: which project card was clicked (null = modal closed)
   const [selected, setSelected] = useState(null);
+  const [formProject, setFormProject] = useState(null);
 
   // Fetch projects once when the page loads
   useEffect(() => {
@@ -25,7 +23,23 @@ export default function App() {
     });
   }, []);
 
-  // Filter the projects list based on search text and active filter tab
+  function handleAdd(formData) {
+    setProjects((prev) => [...prev, { ...formData, id: Date.now() }]);
+    setFormProject(null);
+  }
+
+  function handleEdit(formData) {
+    setProjects((prev) => prev.map((p) => (p.id === formData.id ? formData : p)));
+    setFormProject(null);
+    setSelected(null);
+  }
+
+  function handleDelete(id) {
+    setProjects((prev) => prev.filter((p) => p.id !== id));
+    setSelected(null);
+  }
+
+  // Filter projects by active tab and search text
   const filtered = projects.filter((p) => {
     const matchesFilter = filter === "All" || p.status === filter;
     const matchesSearch =
@@ -38,53 +52,39 @@ export default function App() {
     <div className="dashboard">
 
       <header className="dash-header">
-        <h1>Project Dashboard</h1>
-        <p>Track and manage all internal projects</p>
+        <div>
+          <h1>Project Dashboard</h1>
+          <p>Track and manage all internal projects</p>
+        </div>
+        <button className="btn-primary" onClick={() => setFormProject({})}>+ Add Project</button>
       </header>
 
-      {/* Stats row — counts projects by status */}
-      <div className="stats-row">
-        <div className="stat-card">
-          <span className="stat-num">{projects.length}</span>
-          <span className="stat-label">Total</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-num">{projects.filter(p => p.status === "In Progress").length}</span>
-          <span className="stat-label">In Progress</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-num">{projects.filter(p => p.status === "Completed").length}</span>
-          <span className="stat-label">Completed</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-num">{projects.filter(p => p.status === "On Hold").length}</span>
-          <span className="stat-label">On Hold</span>
-        </div>
-      </div>
+      {/* Summary counts */}
+      <StatsRow projects={projects} />
 
-      {/* Search box and filter tabs */}
-      <FilterBar
-        search={search}
-        onSearch={setSearch}
-        filter={filter}
-        onFilter={setFilter}
+      {/* Search + filter tabs */}
+      <FilterBar search={search} onSearch={setSearch} filter={filter} onFilter={setFilter} />
+
+      {/* Cards grid (handles loading + empty states too) */}
+      <ProjectGrid loading={loading} projects={filtered} onCardClick={setSelected} />
+
+      {/* Detail popup */}
+      <ProjectModal
+        project={selected}
+        onClose={() => setSelected(null)}
+        onEdit={(p) => { setSelected(null); setFormProject(p); }}
+        onDelete={handleDelete}
       />
 
-      {/* Show loading text, empty message, or the cards grid */}
-      {loading ? (
-        <p className="loading">Loading projects…</p>
-      ) : filtered.length === 0 ? (
-        <p className="empty">No projects match your search.</p>
-      ) : (
-        <div className="cards-grid">
-          {filtered.map((p) => (
-            <ProjectCard key={p.id} project={p} onClick={setSelected} />
-          ))}
-        </div>
+      {/* Add / Edit form popup */}
+      {formProject !== null && (
+        <ProjectForm
+          initial={formProject.id ? formProject : null}
+          onSave={formProject.id ? handleEdit : handleAdd}
+          onCancel={() => setFormProject(null)}
+          projects={projects}
+        />
       )}
-
-      {/* Modal — only visible when a card is clicked */}
-      <ProjectModal project={selected} onClose={() => setSelected(null)} />
 
     </div>
   );
