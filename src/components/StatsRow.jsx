@@ -1,7 +1,3 @@
-// StatsRow — shows 4 summary cards at the top of the dashboard
-// Props:
-//   projects (array) — full list of all projects (not filtered)
-
 export default function StatsRow({ projects }) {
   const counts = {
     total: projects.length,

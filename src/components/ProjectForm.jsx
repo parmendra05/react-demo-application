@@ -1,10 +1,3 @@
-// ProjectForm — form modal for adding or editing a project
-// Props:
-//   initial  (object|null) — project to edit, null means add mode
-//   onSave   (function)    — called with form data on submit
-//   onCancel (function)    — closes the form without saving
-//   projects (array)       — full project list to derive existing managers
-
 import { useState } from "react";
 import ModalOverlay from "./ModalOverlay";
 import ManagerSelect from "./ManagerSelect";
@@ -31,7 +24,6 @@ export default function ProjectForm({ initial, onSave, onCancel, projects }) {
 
   function handleToggleNewManager() {
     setIsNewManager((prev) => {
-      // When cancelling new manager mode, reset back to first existing manager
       if (prev) setForm((f) => ({ ...f, manager: existingManagers[0] ?? "" }));
       else setForm((f) => ({ ...f, manager: "" }));
       return !prev;
@@ -50,7 +42,6 @@ export default function ProjectForm({ initial, onSave, onCancel, projects }) {
       <h2>{initial ? "Edit Project" : "Add New Project"}</h2>
 
       <form className="project-form" onSubmit={handleSubmit}>
-
         <label>Project Name
           <input name="name" value={form.name} onChange={handleChange} placeholder="Enter project name" required />
         </label>
@@ -86,7 +77,6 @@ export default function ProjectForm({ initial, onSave, onCancel, projects }) {
           <button type="button" className="btn-secondary" onClick={onCancel}>Cancel</button>
           <button type="submit" className="btn-primary">{initial ? "Save Changes" : "Add Project"}</button>
         </div>
-
       </form>
     </ModalOverlay>
   );
