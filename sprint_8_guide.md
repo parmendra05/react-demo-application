@@ -15,7 +15,7 @@
 
 ```jsx
 import { useState, useEffect } from "react";
-import { fetchProjects } from "./data/mockData";
+import { fetchProjects, createProject, updateProject, deleteProject } from "./api/projectApi";
 import FilterBar from "./components/FilterBar";
 import StatsRow from "./components/StatsRow";
 import ProjectGrid from "./components/ProjectGrid";
@@ -33,26 +33,50 @@ export default function App() {
 
   // Fetch projects once when the page loads
   useEffect(() => {
-    fetchProjects().then((data) => {
-      setProjects(data);
-      setLoading(false);
-    });
+    fetchProjects()
+      .then((data) => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch projects:", err);
+        alert("Failed to load projects. Is the backend running?");
+        setLoading(false);
+      });
   }, []);
 
-  function handleAdd(formData) {
-    setProjects((prev) => [...prev, { ...formData, id: Date.now() }]);
-    setFormProject(null);
+  async function handleAdd(formData) {
+    try {
+      const newProject = await createProject(formData);
+      setProjects((prev) => [...prev, newProject]);
+      setFormProject(null);
+    } catch (err) {
+      console.error("Failed to add project:", err);
+      alert("Failed to add project. Is the backend running?");
+    }
   }
 
-  function handleEdit(formData) {
-    setProjects((prev) => prev.map((p) => (p.id === formData.id ? formData : p)));
-    setFormProject(null);
-    setSelected(null);
+  async function handleEdit(formData) {
+    try {
+      const updated = await updateProject(formData.id, formData);
+      setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      setFormProject(null);
+      setSelected(null);
+    } catch (err) {
+      console.error("Failed to update project:", err);
+      alert("Failed to update project. Is the backend running?");
+    }
   }
 
-  function handleDelete(id) {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-    setSelected(null);
+  async function handleDelete(id) {
+    try {
+      await deleteProject(id);
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+      setSelected(null);
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+      alert("Failed to delete project. Is the backend running?");
+    }
   }
 
   // Filter projects by active tab and search text
@@ -124,38 +148,54 @@ export default function App() {
 
 ## Understanding the 3 CRUD Functions
 
-**handleAdd — creates a new project:**
+**handleAdd — creates a new project via POST /api/projects:**
 ```js
-function handleAdd(formData) {
-  setProjects((prev) => [...prev, { ...formData, id: Date.now() }]);
-  setFormProject(null); // close the form
+async function handleAdd(formData) {
+  try {
+    const newProject = await createProject(formData);
+    setProjects((prev) => [...prev, newProject]);
+    setFormProject(null);
+  } catch (err) {
+    alert("Failed to add project. Is the backend running?");
+  }
 }
 ```
-- `Date.now()` generates a unique number (milliseconds since 1970) as the new project's `id`
-- `[...prev, newProject]` — spread the existing array, then add the new project at the end
+- Calls `createProject(formData)` which sends `POST /api/projects`
+- Backend returns the new project with an auto-generated `id`
+- `[...prev, newProject]` adds it to the end of the array
 
-**handleEdit — updates an existing project:**
+**handleEdit — updates an existing project via PUT /api/projects/:id:**
 ```js
-function handleEdit(formData) {
-  setProjects((prev) => prev.map((p) => (p.id === formData.id ? formData : p)));
-  setFormProject(null);
-  setSelected(null);
+async function handleEdit(formData) {
+  try {
+    const updated = await updateProject(formData.id, formData);
+    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setFormProject(null);
+    setSelected(null);
+  } catch (err) {
+    alert("Failed to update project. Is the backend running?");
+  }
 }
 ```
-- `.map()` goes through every project
-- If `p.id === formData.id` → replace with the updated `formData`
-- Otherwise → keep the original `p`
-- Result: a new array with only the edited project replaced
+- Calls `updateProject(id, formData)` which sends `PUT /api/projects/{id}`
+- Backend returns the updated project
+- `.map()` replaces only the matching project in the array
 
-**handleDelete — removes a project:**
+**handleDelete — removes a project via DELETE /api/projects/:id:**
 ```js
-function handleDelete(id) {
-  setProjects((prev) => prev.filter((p) => p.id !== id));
-  setSelected(null); // close the modal
+async function handleDelete(id) {
+  try {
+    await deleteProject(id);
+    setProjects((prev) => prev.filter((p) => p.id !== id));
+    setSelected(null);
+  } catch (err) {
+    alert("Failed to delete project. Is the backend running?");
+  }
 }
 ```
-- `.filter()` keeps only projects where `p.id !== id`
-- The project with the matching `id` is excluded → effectively deleted
+- Calls `deleteProject(id)` which sends `DELETE /api/projects/{id}`
+- Backend returns `204 No Content`
+- `.filter()` removes the project from the array
 
 ---
 
@@ -186,8 +226,8 @@ function handleDelete(id) {
 ## Complete Data Flow Diagram
 
 ```
-mockData.js
-    │  fetchProjects() on mount
+projectApi.js
+    │  HTTP calls: GET, POST, PUT, DELETE
     ▼
 App.jsx  ← owns: projects, loading, search, filter, selected, formProject
     │
@@ -201,10 +241,11 @@ App.jsx  ← owns: projects, loading, search, filter, selected, formProject
     │
     ├──▶ ProjectModal    receives: selected project
     │                    fires: onEdit → setFormProject(project)
-    │                    fires: onDelete → handleDelete(id)
+    │                    fires: onDelete → handleDelete(id) → DELETE /api/projects/:id
     │
     └──▶ ProjectForm     receives: initial, projects
                          fires: onSave → handleAdd or handleEdit
+                                      → POST or PUT /api/projects
                          fires: onCancel → setFormProject(null)
 ```
 

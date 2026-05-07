@@ -13,6 +13,14 @@
 
 ## Step 1 — Start the App
 
+**Terminal 1 — Start the Spring Boot backend:**
+```bash
+cd project-dashboard-api
+mvn spring-boot:run
+```
+Wait for: `Started ProjectDashboardApiApplication in X.XXX seconds`
+
+**Terminal 2 — Start the React frontend:**
 ```bash
 npm run dev
 ```
@@ -26,8 +34,8 @@ Open `http://localhost:5173` in your browser.
 Go through each item and confirm it works:
 
 **Page Load**
-- [ ] "Loading projects…" text appears briefly (700ms delay from mock API)
-- [ ] 4 project cards appear after loading
+- [ ] "Loading projects…" text appears briefly while fetching from backend
+- [ ] 4 project cards appear after loading (from H2 database)
 - [ ] Stats row shows: 4 Total, 2 In Progress, 1 Completed, 1 On Hold
 
 **Search**
@@ -69,11 +77,22 @@ Go through each item and confirm it works:
 - [ ] Stats row total increases by 1
 - [ ] Select "➕ Add New Manager" → text input appears
 - [ ] Type a new manager name → submit → new manager appears in dropdown next time
+- [ ] Refresh the page (F5) → new project is still there (saved in H2 database)
 
 **Delete Project**
 - [ ] Click a card → click 🗑️ Delete → card is removed from the grid
 - [ ] Stats row count decreases by 1
 - [ ] Modal closes after deletion
+- [ ] Refresh the page (F5) → deleted project is still gone
+
+**Data Persistence**
+- [ ] Add a project → refresh browser (F5) → project still there
+- [ ] Stop Spring Boot (Ctrl+C) → restart → data resets to original 4 (H2 is in-memory)
+
+**H2 Console**
+- [ ] Open `http://localhost:8080/h2-console`
+- [ ] Connect: JDBC URL `jdbc:h2:mem:dashboarddb`, username `sa`, no password
+- [ ] Run `SELECT * FROM PROJECT;` → shows all current projects
 
 **Empty State**
 - [ ] Type "zzzzz" in search → "No projects match your search." message appears
@@ -86,6 +105,8 @@ Go through each item and confirm it works:
 ```
 demo-application/
 ├── src/
+│   ├── api/
+│   │   └── projectApi.js        ← Sprint 2: GET, POST, PUT, DELETE HTTP calls
 │   ├── components/
 │   │   ├── StatusBadge.jsx      ← Sprint 3: colored status label
 │   │   ├── ModalOverlay.jsx     ← Sprint 3: dark background wrapper
@@ -97,12 +118,25 @@ demo-application/
 │   │   ├── ManagerSelect.jsx    ← Sprint 6: manager dropdown + new manager input
 │   │   ├── DeadlinePicker.jsx   ← Sprint 6: calendar date picker
 │   │   └── ProjectForm.jsx      ← Sprint 7: add/edit form modal
-│   ├── data/
-│   │   └── mockData.js          ← Sprint 2: project data + fake API
+│   ├── __tests__/
+│   │   ├── projectApi.test.js
+│   │   ├── StatusBadge.test.jsx
+│   │   ├── ModalOverlay.test.jsx
+│   │   ├── FilterBar.test.jsx
+│   │   ├── ProjectCard.test.jsx
+│   │   ├── StatsRow.test.jsx
+│   │   ├── ProjectGrid.test.jsx
+│   │   ├── ProjectModal.test.jsx
+│   │   ├── ManagerSelect.test.jsx
+│   │   └── ProjectForm.test.jsx
 │   ├── App.jsx                  ← Sprint 8: main component, all state + CRUD
 │   ├── App.css                  ← Sprint 9: all styles
 │   ├── index.css                ← Sprint 9: global reset + #root fix
+│   ├── setupTests.js            ← test setup (jest-dom)
 │   └── main.jsx                 ← never changes
+├── vite.config.js
+├── vitest.config.js
+└── package.json
 ```
 
 ---
@@ -144,20 +178,31 @@ App.jsx
 
 ---
 
+## Running Unit Tests
+
+```bash
+npm run test          # watch mode
+npm run test -- --run # single run
+npm run test:coverage # with coverage report
+```
+
+52 tests across 10 test files covering all components and the API layer.
+
+---
+
 ## Troubleshooting Guide
 
 | Problem | Likely Cause | Fix |
 |---------|-------------|-----|
 | Blank white page | Import path error | Open F12 → Console, check for red errors |
-| Cards not showing | `mockData.js` not exporting correctly | Check `export const fetchProjects` exists |
+| Cards not showing | Backend not running | Run `mvn spring-boot:run` in `project-dashboard-api/` |
 | Badge has no color | Status string doesn't match exactly | Must be exactly `"In Progress"`, `"Completed"`, `"On Hold"` |
 | Modal closes when clicking inside | Missing `stopPropagation` | Check `ModalOverlay.jsx` has `e.stopPropagation()` on inner div |
 | Form doesn't open | `formProject` state issue | Check `setFormProject({})` is called on button click |
 | Calendar not showing | `react-datepicker` not installed | Run `npm install react-datepicker` |
 | Layout is very narrow | `#root` not updated | Set `width: 100%` on `#root` in `index.css` |
-| New project disappears on refresh | No persistent storage | Data lives in React state only — see note below |
-
-> **Note on data persistence:** When you refresh the page, all added/edited/deleted projects reset back to the original `mockData.js` data. This is because React state only lives in memory. To persist data across refreshes, you would need to add `localStorage` (browser storage) or a real backend database.
+| "Failed to load projects" alert | Spring Boot not running | Start backend first: `mvn spring-boot:run` |
+| Data resets on backend restart | H2 is in-memory | Expected behaviour — `data.sql` re-seeds on every startup |
 
 ---
 
@@ -180,13 +225,14 @@ npm run preview
 
 | Feature | How it works |
 |---------|-------------|
-| View projects | `fetchProjects()` loads data → stored in `projects` state → rendered as cards |
+| View projects | `fetchProjects()` calls `GET /api/projects` → stored in `projects` state → rendered as cards |
 | Search | `search` state filters `projects` array in real time |
 | Filter tabs | `filter` state filters `projects` array by status |
 | View details | Clicking a card sets `selected` state → `ProjectModal` renders |
-| Add project | `+ Add Project` sets `formProject` to `{}` → form opens → `handleAdd` appends to array |
-| Edit project | ✏️ Edit sets `formProject` to the project → form pre-fills → `handleEdit` replaces in array |
-| Delete project | 🗑️ Delete calls `handleDelete` → `.filter()` removes from array |
+| Add project | `+ Add Project` sets `formProject` to `{}` → form opens → `handleAdd` calls `POST /api/projects` |
+| Edit project | ✏️ Edit sets `formProject` to the project → form pre-fills → `handleEdit` calls `PUT /api/projects/:id` |
+| Delete project | 🗑️ Delete calls `handleDelete` → `DELETE /api/projects/:id` → `.filter()` removes from array |
+| Data persistence | All changes saved in H2 database → survive page refresh |
 
 ---
 

@@ -16,10 +16,11 @@
 ### Frontend — `demo-application/`
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **React** | 19 | Component-based UI with hooks |
-| **Vite** | 8 | Fast dev server, proxy configuration |
-| **React Compiler** | Latest | Automatic re-render optimization |
+| **React** | 18 | Component-based UI with hooks |
+| **Vite** | 5 | Fast dev server, proxy configuration |
 | **react-datepicker** | 9 | Calendar popup for deadline field |
+| **Vitest** | 2 | Unit test runner |
+| **@testing-library/react** | 16 | Component testing utilities |
 | **Custom CSS** | — | Clean styling, zero external UI libraries |
 
 ### Backend — `project-dashboard-api/`
@@ -57,20 +58,20 @@ npm -v
 ```
 Expected: Node 18 or higher
 
-**4. Verify ports are free:**
-- Port `8080` must be free — Spring Boot uses it
-- Port `5173` must be free — Vite uses it
-
-**5. Verify both project folders exist:**
-```
-c:\Users\parme\Desktop\New folder\project-dashboard-api\   ← Spring Boot
-c:\Users\parme\Desktop\New folder\demo-application\        ← React
-```
-
-**6. Install React dependencies if not done:**
+**4. Install React dependencies:**
 ```bash
 cd "c:\Users\parme\Desktop\New folder\demo-application"
 npm install
+```
+
+**5. Verify ports are free:**
+- Port `8080` must be free — Spring Boot uses it
+- Port `5173` must be free — Vite uses it
+
+**6. Verify both project folders exist:**
+```
+c:\Users\parme\Desktop\New folder\project-dashboard-api\   ← Spring Boot
+c:\Users\parme\Desktop\New folder\demo-application\        ← React
 ```
 
 ---
@@ -110,7 +111,7 @@ npm run dev
 
 **Watch for:**
 ```
-  VITE v8.x.x  ready in XXX ms
+  VITE v5.x.x  ready in XXX ms
   ➜  Local:   http://localhost:5173/
 ```
 
@@ -120,14 +121,20 @@ npm run dev
 
 **Show `vite.config.js` proxy config:**
 ```js
-server: {
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true,
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      }
     }
   }
-}
+})
 ```
 
 ---
@@ -587,4 +594,4 @@ Tick each item off during the demo:
 
 ---
 
-*Full-Stack Project Dashboard | React 19 + Spring Boot 3.2.5 + H2 | Java 17 | Presented by: [Your Name]*
+*Full-Stack Project Dashboard | React 18 + Spring Boot 3.2.5 + H2 | Java 17 | Presented by: [Your Name]*
