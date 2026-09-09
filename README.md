@@ -25,12 +25,14 @@ A React-based internal project tracking dashboard that lets employees and manage
 
 The Project Dashboard is a single-page application (SPA) built with React 19 and Vite. It provides:
 
-- A summary stats row showing total, in-progress, completed, and on-hold project counts
-- A search bar to filter projects by name or manager
-- Status filter tabs (All / In Progress / Completed / On Hold)
-- A responsive card grid displaying each project with status badge, deadline countdown, and progress bar
-- A detail modal showing full project info and a task-by-task breakdown
+- (main) Vite + React project scaffold with mock data layer (`mockData.js`) and sprint guide files — starting point before any UI is built
+- (v1+) A summary stats row showing total, in-progress, completed, and on-hold project counts
+- (v1+) A search bar to filter projects by name or manager
+- (v1+) Status filter tabs (All / In Progress / Completed / On Hold)
+- (v1+) A responsive card grid displaying each project with status badge, deadline countdown, and progress bar
+- (v1+) A detail modal showing full project info and a task-by-task breakdown
 - (v2+) Add, edit, and delete projects via a form modal
+- (v2+) Refactored component architecture — StatsRow, ProjectGrid, StatusBadge, ManagerSelect, DeadlinePicker, ModalOverlay
 - (v3+) Full unit test coverage using Vitest and React Testing Library
 - (v3+) Real Spring Boot REST API backend replacing the mock data layer
 
