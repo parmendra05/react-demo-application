@@ -2,6 +2,11 @@
 
 A React-based internal project tracking dashboard that lets employees and managers view, search, filter, and manage all internal projects in one place.
 
+| | |
+|---|---|
+| Frontend Repository | https://github.com/parmendra05/react-demo-application |
+| Backend Repository | https://github.com/parmendra05/project-dashboard-api |
+
 ---
 
 ## Table of Contents
@@ -103,7 +108,7 @@ Download Java 17 from https://adoptium.net if not installed.
 
 ```bash
 # 1. Clone and switch to the desired branch
-git clone <repository-url>
+git clone https://github.com/parmendra05/react-demo-application
 cd demo-application
 git checkout v2   # or main, v1
 
@@ -122,6 +127,7 @@ v3 replaces the mock data layer with a real Spring Boot REST API. Both servers m
 
 **Terminal 1 — start the Spring Boot backend:**
 ```bash
+git clone https://github.com/parmendra05/project-dashboard-api
 cd project-dashboard-api
 mvn spring-boot:run
 ```
@@ -130,6 +136,7 @@ Backend is now live at `http://localhost:8080`
 
 **Terminal 2 — start the React frontend:**
 ```bash
+git clone https://github.com/parmendra05/react-demo-application
 cd demo-application
 git checkout v3
 npm install
@@ -417,6 +424,8 @@ There are **4 branches** in this repository:
 ### `main`
 The base branch containing the initial project scaffold. Includes the Vite + React setup, folder structure, and the sprint guide files. The application code is minimal — this is the starting point before any features are built.
 
+![main branch output](public/main-branch-output.png)
+
 **Contains:**
 - Vite + React 19 scaffold
 - `src/data/mockData.js` with 6 mock projects
@@ -427,6 +436,8 @@ The base branch containing the initial project scaffold. Includes the Vite + Rea
 
 ### `v1`
 The first complete working version of the dashboard. Built across 4 sprints by the team. Implements the full read-only dashboard with search, filtering, and project detail modal.
+
+![v1 branch output](public/v1-branch-output.png)
 
 **Contains everything in `main`, plus:**
 - Complete `App.jsx` with state management and filtering logic
@@ -447,6 +458,8 @@ The first complete working version of the dashboard. Built across 4 sprints by t
 
 ### `v2`
 An upgraded version that adds full CRUD (Create, Read, Update, Delete) capabilities. The component architecture is also refactored — monolithic components are split into smaller, focused pieces.
+
+![v2 branch output](public/v2-branch-output.png)
 
 **Contains everything in `v1`, plus:**
 - `ProjectForm.jsx` — Add/Edit project form modal
@@ -469,6 +482,8 @@ An upgraded version that adds full CRUD (Create, Read, Update, Delete) capabilit
 
 ### `v3`
 The most complete version. Replaces the mock data layer with a real **Java Spring Boot REST API** backed by an **H2 in-memory database**. Also adds a full unit test suite and downgrades React to 18.3.1 for testing library compatibility.
+
+![v3 branch output](public/v3-branch-output.png)
 
 **Contains everything in `v2`, plus:**
 - `src/api/projectApi.js` — real `fetch()` HTTP calls to Spring Boot (`GET`, `POST`, `PUT`, `DELETE`)
