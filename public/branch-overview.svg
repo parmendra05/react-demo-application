@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" font-family="system-ui, -apple-system, sans-serif">
+
+  <!-- Background -->
+  <rect width="1100" height="820" fill="#f0f2f7" rx="16"/>
+
+  <!-- Title -->
+  <text x="550" y="44" text-anchor="middle" font-size="22" font-weight="700" fill="#1e293b">Branch Evolution Overview</text>
+  <text x="550" y="68" text-anchor="middle" font-size="13" fill="#64748b">Each branch builds on the previous one</text>
+
+  <!-- ── Timeline spine ── -->
+  <line x1="90" y1="110" x2="90" y2="760" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6 4"/>
+
+  <!-- ════════════════════════════════════════
+       BRANCH: main
+  ════════════════════════════════════════ -->
+  <!-- dot -->
+  <circle cx="90" cy="130" r="10" fill="#4f46e5"/>
+  <text x="108" y="135" font-size="15" font-weight="700" fill="#4f46e5">main</text>
+  <text x="108" y="152" font-size="11" fill="#64748b">Scaffold only — starting point</text>
+
+  <!-- card -->
+  <rect x="220" y="108" width="840" height="68" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+  <!-- mini file list -->
+  <rect x="238" y="122" width="120" height="14" rx="3" fill="#f1f5f9"/>
+  <text x="248" y="133" font-size="10" fill="#64748b">mockData.js</text>
+  <rect x="368" y="122" width="130" height="14" rx="3" fill="#f1f5f9"/>
+  <text x="378" y="133" font-size="10" fill="#64748b">sprint_1–4_guide.md</text>
+  <rect x="508" y="122" width="110" height="14" rx="3" fill="#f1f5f9"/>
+  <text x="518" y="133" font-size="10" fill="#64748b">App.jsx (stub)</text>
+  <rect x="628" y="122" width="90" height="14" rx="3" fill="#f1f5f9"/>
+  <text x="638" y="133" font-size="10" fill="#64748b">vite.config.js</text>
+  <!-- label -->
+  <text x="238" y="162" font-size="11" fill="#94a3b8">No UI yet — just project scaffold, mock data, and sprint guides</text>
+
+  <!-- ════════════════════════════════════════
+       BRANCH: v1
+  ════════════════════════════════════════ -->
+  <circle cx="90" cy="240" r="10" fill="#2563eb"/>
+  <text x="108" y="245" font-size="15" font-weight="700" fill="#2563eb">v1</text>
+  <text x="108" y="262" font-size="11" fill="#64748b">Read-only dashboard — search, filter, detail modal</text>
+
+  <!-- v1 UI mockup card -->
+  <rect x="220" y="218" width="840" height="170" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- header bar -->
+  <rect x="236" y="232" width="808" height="28" rx="6" fill="#4f46e5"/>
+  <text x="248" y="251" font-size="12" font-weight="600" fill="#ffffff">Project Dashboard</text>
+  <text x="700" y="251" font-size="10" fill="#c7d2fe">Track and manage all internal projects</text>
+
+  <!-- stats row -->
+  <rect x="236" y="268" width="188" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="246" y="282" font-size="10" fill="#64748b">Total</text>
+  <text x="246" y="296" font-size="14" font-weight="700" fill="#1e293b">6</text>
+
+  <rect x="432" y="268" width="188" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="442" y="282" font-size="10" fill="#64748b">In Progress</text>
+  <text x="442" y="296" font-size="14" font-weight="700" fill="#2563eb">2</text>
+
+  <rect x="628" y="268" width="188" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="638" y="282" font-size="10" fill="#64748b">Completed</text>
+  <text x="638" y="296" font-size="14" font-weight="700" fill="#16a34a">2</text>
+
+  <rect x="824" y="268" width="188" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="834" y="282" font-size="10" fill="#64748b">On Hold</text>
+  <text x="834" y="296" font-size="14" font-weight="700" fill="#d97706">2</text>
+
+  <!-- search + filter tabs -->
+  <rect x="236" y="312" width="340" height="22" rx="5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="248" y="327" font-size="10" fill="#94a3b8">Search projects or managers…</text>
+
+  <rect x="584" y="312" width="40" height="22" rx="11" fill="#4f46e5"/>
+  <text x="604" y="327" text-anchor="middle" font-size="9" fill="#fff">All</text>
+  <rect x="630" y="312" width="68" height="22" rx="11" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="664" y="327" text-anchor="middle" font-size="9" fill="#64748b">In Progress</text>
+  <rect x="704" y="312" width="64" height="22" rx="11" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="736" y="327" text-anchor="middle" font-size="9" fill="#64748b">Completed</text>
+  <rect x="774" y="312" width="54" height="22" rx="11" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="801" y="327" text-anchor="middle" font-size="9" fill="#64748b">On Hold</text>
+
+  <!-- project cards row -->
+  <rect x="236" y="342" width="192" height="38" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="240" y="348" width="52" height="12" rx="6" fill="#dbeafe"/>
+  <text x="244" y="358" font-size="8" fill="#2563eb">In Progress</text>
+  <text x="240" y="372" font-size="9" font-weight="600" fill="#1e293b">HR Platform Migration</text>
+
+  <rect x="436" y="342" width="192" height="38" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="440" y="348" width="52" height="12" rx="6" fill="#dcfce7"/>
+  <text x="444" y="358" font-size="8" fill="#16a34a">Completed</text>
+  <text x="440" y="372" font-size="9" font-weight="600" fill="#1e293b">Q2 Marketing Analytics</text>
+
+  <rect x="636" y="342" width="192" height="38" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="640" y="348" width="42" height="12" rx="6" fill="#fef3c7"/>
+  <text x="644" y="358" font-size="8" fill="#d97706">On Hold</text>
+  <text x="640" y="372" font-size="9" font-weight="600" fill="#1e293b">AI Chatbot</text>
+
+  <!-- ════════════════════════════════════════
+       BRANCH: v2
+  ════════════════════════════════════════ -->
+  <circle cx="90" cy="430" r="10" fill="#16a34a"/>
+  <text x="108" y="435" font-size="15" font-weight="700" fill="#16a34a">v2</text>
+  <text x="108" y="452" font-size="11" fill="#64748b">Full CRUD — add, edit, delete projects + refactored components</text>
+
+  <!-- v2 UI mockup card -->
+  <rect x="220" y="408" width="840" height="180" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- header bar with Add button -->
+  <rect x="236" y="422" width="808" height="28" rx="6" fill="#4f46e5"/>
+  <text x="248" y="441" font-size="12" font-weight="600" fill="#ffffff">Project Dashboard</text>
+  <!-- Add Project button -->
+  <rect x="940" y="426" width="88" height="20" rx="5" fill="#ffffff"/>
+  <text x="984" y="440" text-anchor="middle" font-size="9" font-weight="700" fill="#4f46e5">+ Add Project</text>
+
+  <!-- stats row (same as v1) -->
+  <rect x="236" y="458" width="188" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="246" y="470" font-size="9" fill="#64748b">Total</text><text x="246" y="482" font-size="12" font-weight="700" fill="#1e293b">6</text>
+  <rect x="432" y="458" width="188" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="442" y="470" font-size="9" fill="#64748b">In Progress</text><text x="442" y="482" font-size="12" font-weight="700" fill="#2563eb">2</text>
+  <rect x="628" y="458" width="188" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="638" y="470" font-size="9" fill="#64748b">Completed</text><text x="638" y="482" font-size="12" font-weight="700" fill="#16a34a">2</text>
+  <rect x="824" y="458" width="188" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="834" y="470" font-size="9" fill="#64748b">On Hold</text><text x="834" y="482" font-size="12" font-weight="700" fill="#d97706">2</text>
+
+  <!-- project cards with Edit/Delete buttons -->
+  <rect x="236" y="496" width="192" height="56" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="240" y="502" width="52" height="12" rx="6" fill="#dbeafe"/>
+  <text x="244" y="512" font-size="8" fill="#2563eb">In Progress</text>
+  <text x="240" y="526" font-size="9" font-weight="600" fill="#1e293b">HR Platform Migration</text>
+  <rect x="240" y="538" width="36" height="10" rx="3" fill="#4f46e5"/>
+  <text x="258" y="546" text-anchor="middle" font-size="7" fill="#fff">✏ Edit</text>
+  <rect x="282" y="538" width="36" height="10" rx="3" fill="#fee2e2"/>
+  <text x="300" y="546" text-anchor="middle" font-size="7" fill="#dc2626">🗑 Delete</text>
+
+  <!-- Add Project Form modal overlay (ghost) -->
+  <rect x="560" y="496" width="480" height="88" rx="8" fill="#1e293b" opacity="0.08"/>
+  <rect x="572" y="504" width="456" height="72" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="584" y="520" font-size="10" font-weight="700" fill="#1e293b">Add / Edit Project</text>
+  <rect x="584" y="526" width="130" height="12" rx="3" fill="#f1f5f9"/>
+  <text x="590" y="536" font-size="8" fill="#94a3b8">Project Name</text>
+  <rect x="724" y="526" width="130" height="12" rx="3" fill="#f1f5f9"/>
+  <text x="730" y="536" font-size="8" fill="#94a3b8">Manager</text>
+  <rect x="584" y="544" width="130" height="12" rx="3" fill="#f1f5f9"/>
+  <text x="590" y="554" font-size="8" fill="#94a3b8">Status</text>
+  <rect x="724" y="544" width="130" height="12" rx="3" fill="#f1f5f9"/>
+  <text x="730" y="554" font-size="8" fill="#94a3b8">Deadline (date picker)</text>
+  <rect x="880" y="526" width="60" height="28" rx="4" fill="#4f46e5"/>
+  <text x="910" y="544" text-anchor="middle" font-size="9" fill="#fff">Save</text>
+
+  <!-- new components label -->
+  <text x="236" y="578" font-size="10" fill="#16a34a">+ ProjectForm  + ProjectGrid  + StatsRow  + StatusBadge  + ManagerSelect  + DeadlinePicker  + ModalOverlay</text>
+
+  <!-- ════════════════════════════════════════
+       BRANCH: v3
+  ════════════════════════════════════════ -->
+  <circle cx="90" cy="630" r="10" fill="#d97706"/>
+  <text x="108" y="635" font-size="15" font-weight="700" fill="#d97706">v3</text>
+  <text x="108" y="652" font-size="11" fill="#64748b">Full unit test suite + API abstraction layer</text>
+
+  <!-- v3 card -->
+  <rect x="220" y="608" width="840" height="150" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- terminal-style test output -->
+  <rect x="236" y="622" width="808" height="126" rx="6" fill="#0f172a"/>
+  <text x="252" y="642" font-size="11" font-family="monospace" fill="#94a3b8">$ npm run test</text>
+  <text x="252" y="660" font-size="10" font-family="monospace" fill="#4ade80"> ✓  FilterBar.test.jsx        (4 tests)</text>
+  <text x="252" y="675" font-size="10" font-family="monospace" fill="#4ade80"> ✓  ProjectCard.test.jsx      (5 tests)</text>
+  <text x="252" y="690" font-size="10" font-family="monospace" fill="#4ade80"> ✓  ProjectModal.test.jsx     (4 tests)</text>
+  <text x="252" y="705" font-size="10" font-family="monospace" fill="#4ade80"> ✓  ProjectForm.test.jsx      (6 tests)</text>
+  <text x="252" y="720" font-size="10" font-family="monospace" fill="#4ade80"> ✓  StatsRow / StatusBadge / ManagerSelect / ModalOverlay / projectApi</text>
+  <text x="600" y="660" font-size="10" font-family="monospace" fill="#94a3b8">React downgraded → 18.3.1</text>
+  <text x="600" y="675" font-size="10" font-family="monospace" fill="#94a3b8">+ vitest  + @testing-library/react</text>
+  <text x="600" y="690" font-size="10" font-family="monospace" fill="#94a3b8">+ @testing-library/jest-dom</text>
+  <text x="600" y="705" font-size="10" font-family="monospace" fill="#94a3b8">+ jsdom  + @vitest/coverage-v8</text>
+  <text x="600" y="720" font-size="10" font-family="monospace" fill="#94a3b8">+ src/api/projectApi.js</text>
+  <text x="252" y="738" font-size="11" font-family="monospace" fill="#facc15"> Test Files  10 passed (10)</text>
+
+  <!-- ── Legend ── -->
+  <rect x="220" y="772" width="840" height="34" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="248" cy="789" r="6" fill="#4f46e5"/>
+  <text x="260" y="793" font-size="11" fill="#1e293b">main — scaffold</text>
+  <circle cx="380" cy="789" r="6" fill="#2563eb"/>
+  <text x="392" y="793" font-size="11" fill="#1e293b">v1 — read-only dashboard</text>
+  <circle cx="560" cy="789" r="6" fill="#16a34a"/>
+  <text x="572" y="793" font-size="11" fill="#1e293b">v2 — full CRUD</text>
+  <circle cx="690" cy="789" r="6" fill="#d97706"/>
+  <text x="702" y="793" font-size="11" fill="#1e293b">v3 — unit tests + API layer</text>
+
+</svg>
